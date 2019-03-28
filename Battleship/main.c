@@ -49,7 +49,32 @@ int placeBoats(int pf, int posx, int posy, int dir, int type){
         
         // playfield[posx][posy] = type;
     } else if (pf == 1){
-        // L'ordi
+        int a;
+        int isPossible = 1;
+        
+        for (a = 0; a < type / 10 % 10; a++){
+            if (dir == 0){
+                if (playfield2[posx+a][posy] != 0) {
+                    isPossible = 0;
+                }
+            } else if (dir == 1){
+                if (playfield2[posx][posy+a] != 0) {
+                    isPossible = 0;
+                }
+            }
+        }
+        
+        if (isPossible == 0){
+            return 2;
+        }
+        
+        for (a = 0; a < type / 10 % 10; a++){
+            if (dir == 0){
+                playfield2[posx+a][posy] = type;
+            } else if (dir == 1){
+                playfield2[posx][posy+a] = type;
+            }
+        }
         
     }
     
