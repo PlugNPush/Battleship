@@ -821,7 +821,7 @@ int shoot(int pf, int posx, int posy){
 
 int gameStarted(int turn){
         // This is the core center for the game and it will retrun the winner
-    
+    printf("\n");
     playingShowBoards();
     
     int posx, posy;
