@@ -11,10 +11,13 @@
 #include <string.h>
 #include <time.h>
 
-int playfield[10][10], playfield2[10][10];
+// Our global variables used in the entire code, way easier to manage than a main declaration + pointers
+int playfield[500][500], playfield2[500][500], sizex, sizey, winningEntity;
+
+
 
 int placeBoats(int pf, int posx, int posy, int dir, int type){
-    if ((pf > 1 || pf < 0) || (dir > 1 || dir < 0) || (type > 50 || type < 20) || (posx > 10 || posx < 0) || (posy > 10 || posy < 0)){
+    if ((pf > 1 || pf < 0) || (dir > 1 || dir < 0) || (type > 50 || type < 20) || (posx > sizex || posx < 0) || (posy > sizey || posy < 0)){
         // Unrealistic error
         return 1;
     }
@@ -28,8 +31,8 @@ int placeBoats(int pf, int posx, int posy, int dir, int type){
         
         int i,s;
         
-        for (i = 0; i < 10; i++){
-            for (s = 0; s < 10; s++){
+        for (i = 0; i < sizex; i++){
+            for (s = 0; s < sizey; s++){
                 if(playfield[i][s] == type){
                     return 3;
                 }
@@ -37,11 +40,11 @@ int placeBoats(int pf, int posx, int posy, int dir, int type){
         }
         
         if (dir == 0){
-            if (type / 10 % 10 + posx >= 10){
+            if (type / 10 % 10 + posx >= sizex){
                 return 2;
             }
         } else {
-            if (type / 10 % 10 + posy >= 10){
+            if (type / 10 % 10 + posy >= sizey){
                 return 2;
             }
         }
@@ -77,8 +80,8 @@ int placeBoats(int pf, int posx, int posy, int dir, int type){
         int isPossible = 1;
         int i,s;
         
-        for (i = 0; i < 10; i++){
-            for (s = 0; s < 10; s++){
+        for (i = 0; i < sizex; i++){
+            for (s = 0; s < sizey; s++){
                 if(playfield[i][s] == type){
                     return 3;
                 }
@@ -86,11 +89,11 @@ int placeBoats(int pf, int posx, int posy, int dir, int type){
         }
         
         if (dir == 0){
-            if (type / 10 % 10 + posx >= 10){
+            if (type / 10 % 10 + posx >= sizex){
                 return 4;
             }
         } else {
-            if (type / 10 % 10 + posy >= 10){
+            if (type / 10 % 10 + posy >= sizey){
                 return 4;
             }
         }
@@ -125,10 +128,13 @@ int placeBoats(int pf, int posx, int posy, int dir, int type){
 }
 
 void playingShowBoards(){
+    
+    // We show the two boards but without the details of the enemy
+    
     int i,s;
     printf("\t\t\t  YOU\t\t\t\t\t\t\t   ENEMY\n");
-    for (i = 0; i < 10; i++) {
-        for (s = 0; s < 10; s++) {
+    for (i = 0; i < sizex; i++) {
+        for (s = 0; s < sizey; s++) {
             switch (playfield[i][s]) {
                 case 0:
                     printf("🌊");
@@ -151,12 +157,34 @@ void playingShowBoards(){
                 case 1:
                     printf("💦");
                     break;
-                case (500 / 100 % 100):
-                        // On va changer ça et mettre 520, 530, 535, 540 et 550 pour savoir si le bateau est coulé en interne
-                        // On mettra pour le display case 500 / 100 % 100
+                case 520:
                     printf("💥");
                     break;
-                case (900 / 100 % 100):
+                case 530:
+                    printf("💥");
+                    break;
+                case 535:
+                    printf("💥");
+                    break;
+                case 540:
+                    printf("💥");
+                    break;
+                case 550:
+                    printf("💥");
+                    break;
+                case 920:
+                    printf("☠️");
+                    break;
+                case 930:
+                    printf("☠️");
+                    break;
+                case 935:
+                    printf("☠️");
+                    break;
+                case 940:
+                    printf("☠️");
+                    break;
+                case 950:
                     printf("☠️");
                     break;
                     
@@ -167,35 +195,42 @@ void playingShowBoards(){
             printf(" ");
         }
         printf(" |  ");
-        for (s = 0; s < 10; s++){
+        for (s = 0; s < sizey; s++){
                 switch (playfield2[i][s]) {
                     case 0:
                         printf("🌊");
                         break;
-                    case 20:
-                        printf("🚣🏼‍♀️");
-                        break;
-                    case 30:
-                        printf("🚤");
-                        break;
-                    case 35:
-                        printf("🚤");
-                        break;
-                    case 40:
-                        printf("⛵️");
-                        break;
-                    case 50:
-                        printf("🚢");
-                        break;
                     case 1:
                         printf("💦");
                         break;
-                    case (500 / 100 % 100):
-                            // On va changer ça et mettre 520, 530, 535, 540 et 550 pour savoir si le bateau est coulé en interne
-                            // On mettra pour le display case 500 / 100 % 100
+                    case 520:
                         printf("💥");
                         break;
-                    case (900 / 100 % 100):
+                    case 530:
+                        printf("💥");
+                        break;
+                    case 535:
+                        printf("💥");
+                        break;
+                    case 540:
+                        printf("💥");
+                        break;
+                    case 550:
+                        printf("💥");
+                        break;
+                    case 920:
+                        printf("☠️");
+                        break;
+                    case 930:
+                        printf("☠️");
+                        break;
+                    case 935:
+                        printf("☠️");
+                        break;
+                    case 940:
+                        printf("☠️");
+                        break;
+                    case 950:
                         printf("☠️");
                         break;
                         
@@ -211,17 +246,154 @@ void playingShowBoards(){
     
             
     }
+
+void finalShowBoards(){
     
+    // We show the 2 boards with every details
+    
+    int i,s;
+    printf("\t\t\t  YOU\t\t\t\t\t\t\t   ENEMY\n");
+    for (i = 0; i < sizex; i++) {
+        for (s = 0; s < sizey; s++) {
+            switch (playfield[i][s]) {
+                case 0:
+                    printf("🌊");
+                    break;
+                case 20:
+                    printf("🚣🏼‍♀️");
+                    break;
+                case 30:
+                    printf("🚤");
+                    break;
+                case 35:
+                    printf("🚤");
+                    break;
+                case 40:
+                    printf("⛵️");
+                    break;
+                case 50:
+                    printf("🚢");
+                    break;
+                case 1:
+                    printf("💦");
+                    break;
+                case 520:
+                    printf("💥");
+                    break;
+                case 530:
+                    printf("💥");
+                    break;
+                case 535:
+                    printf("💥");
+                    break;
+                case 540:
+                    printf("💥");
+                    break;
+                case 550:
+                    printf("💥");
+                    break;
+                case 920:
+                    printf("☠️");
+                    break;
+                case 930:
+                    printf("☠️");
+                    break;
+                case 935:
+                    printf("☠️");
+                    break;
+                case 940:
+                    printf("☠️");
+                    break;
+                case 950:
+                    printf("☠️");
+                    break;
+                    
+                default:
+                    printf("🌊");
+                    break;
+            }
+            printf(" ");
+        }
+        printf(" |  ");
+        for (s = 0; s < sizey; s++){
+            switch (playfield2[i][s]) {
+                case 0:
+                    printf("🌊");
+                    break;
+                case 20:
+                    printf("🚣🏼‍♀️");
+                    break;
+                case 30:
+                    printf("🚤");
+                    break;
+                case 35:
+                    printf("🚤");
+                    break;
+                case 40:
+                    printf("⛵️");
+                    break;
+                case 50:
+                    printf("🚢");
+                    break;
+                case 1:
+                    printf("💦");
+                    break;
+                case 520:
+                    printf("💥");
+                    break;
+                case 530:
+                    printf("💥");
+                    break;
+                case 535:
+                    printf("💥");
+                    break;
+                case 540:
+                    printf("💥");
+                    break;
+                case 550:
+                    printf("💥");
+                    break;
+                case 920:
+                    printf("☠️");
+                    break;
+                case 930:
+                    printf("☠️");
+                    break;
+                case 935:
+                    printf("☠️");
+                    break;
+                case 940:
+                    printf("☠️");
+                    break;
+                case 950:
+                    printf("☠️");
+                    break;
+                    
+                default:
+                    printf("🌊");
+                    break;
+            }
+            printf(" ");
+        }
+        printf("\n");
+    }
+    
+    
+    
+}
 
 
 
 
 void showBoard(int pf){
+    
+    // Shows a board individually. You can see how the boats ID are structured.
+    
     if (pf == 0){
         int i;
         int s;
-        for (i = 0; i < 10; i++) {
-            for (s = 0; s < 10; s++) {
+        for (i = 0; i < sizex; i++) {
+            for (s = 0; s < sizey; s++) {
                 switch (playfield[i][s]) {
                     case 0:
                         printf("🌊");
@@ -244,12 +416,34 @@ void showBoard(int pf){
                     case 1:
                         printf("💦");
                         break;
-                    case (500 / 100 % 100):
-                        // On va changer ça et mettre 520, 530, 535, 540 et 550 pour savoir si le bateau est coulé en interne
-                        // On mettra pour le display case 500 / 100 % 100
+                    case 520:
                         printf("💥");
                         break;
-                    case (900 / 100 % 100):
+                    case 530:
+                        printf("💥");
+                        break;
+                    case 535:
+                        printf("💥");
+                        break;
+                    case 540:
+                        printf("💥");
+                        break;
+                    case 550:
+                        printf("💥");
+                        break;
+                    case 920:
+                        printf("☠️");
+                        break;
+                    case 930:
+                        printf("☠️");
+                        break;
+                    case 935:
+                        printf("☠️");
+                        break;
+                    case 940:
+                        printf("☠️");
+                        break;
+                    case 950:
                         printf("☠️");
                         break;
 
@@ -264,8 +458,8 @@ void showBoard(int pf){
     } else if (pf == 1) {
         int i;
         int s;
-        for (i = 0; i < 10; i++) {
-            for (s = 0; s < 10; s++) {
+        for (i = 0; i < sizex; i++) {
+            for (s = 0; s < sizey; s++) {
                 switch (playfield2[i][s]) {
                     case 0:
                         printf("🌊");
@@ -288,12 +482,34 @@ void showBoard(int pf){
                     case 1:
                         printf("💦");
                         break;
-                    case (500 / 100 % 100):
-                            // On va changer ça et mettre 520, 530, 535, 540 et 550 pour savoir si le bateau est coulé en interne
-                            // On mettra pour le display case 500 / 100 % 100
+                    case 520:
                         printf("💥");
                         break;
-                    case (900 / 100 % 100):
+                    case 530:
+                        printf("💥");
+                        break;
+                    case 535:
+                        printf("💥");
+                        break;
+                    case 540:
+                        printf("💥");
+                        break;
+                    case 550:
+                        printf("💥");
+                        break;
+                    case 920:
+                        printf("☠️");
+                        break;
+                    case 930:
+                        printf("☠️");
+                        break;
+                    case 935:
+                        printf("☠️");
+                        break;
+                    case 940:
+                        printf("☠️");
+                        break;
+                    case 950:
                         printf("☠️");
                         break;
                         
@@ -314,38 +530,40 @@ void showBoard(int pf){
 
 void computerPlaceBoats(){
     
+    // The computer places each boats randomly
+    
     srand((unsigned int)time(NULL));
     int posx;
     int posy;
     int dir;
     
     do {
-        posx = rand() % 10;
-        posy = rand() % 10;
+        posx = rand() % sizex;
+        posy= rand() % sizey;
         dir = rand() % 2;
     } while (placeBoats(1, posx, posy, dir, 20) != 0);
     
     do {
-        posx = rand() % 10;
-        posy = rand() % 10;
+        posx = rand() % sizex;
+        posy= rand() % sizey;
         dir = rand() % 2;
     } while (placeBoats(1, posx, posy, dir, 30) != 0);
    
     do {
-        posx = rand() % 10;
-        posy = rand() % 10;
+        posx = rand() % sizex;
+        posy= rand() % sizey;
         dir = rand() % 2;
     } while (placeBoats(1, posx, posy, dir, 35) != 0);
     
     do {
-        posx = rand() % 10;
-        posy = rand() % 10;
+        posx = rand() % sizex;
+        posy= rand() % sizey;
         dir = rand() % 2;
     } while (placeBoats(1, posx, posy, dir, 40) != 0);
     
     do {
-        posx = rand() % 10;
-        posy = rand() % 10;
+        posx = rand() % sizex;
+        posy= rand() % sizey;
         dir = rand() % 2;
     } while (placeBoats(1, posx, posy, dir, 50) != 0);
     
@@ -355,6 +573,9 @@ void computerPlaceBoats(){
 
 
 void playerPlaceBoats(){
+    
+    // In this function, we call the placeBoats function for each boats the player wants to place, with the support of the error return codes
+    
     printf("Welcome! The computer is ready. It is time for you to place your boats! Here is your playing field:\n");
     showBoard(0);
     printf("\n");
@@ -362,9 +583,9 @@ void playerPlaceBoats(){
     
     printf("You are about to place a canoe : 🚣🏼‍♀️🚣🏼‍♀️\n");
     do {
-        printf("Please enter start position x (line) [0-9]: ");
+        printf("Please enter start position x (line) [0-%d]: ", sizex-1);
         scanf("%d.1s", &posx);
-        printf("Please enter start position y (column) [0-9]: ");
+        printf("Please enter start position y (column) [0-%d]: ", sizey-1);
         scanf("%d.1s", &posy);
         printf("Please enter the direction (0 = vertical downwards, 1 = horizontal to the right): ");
         scanf("%d.1s", &dir);
@@ -374,7 +595,7 @@ void playerPlaceBoats(){
                 printf("Your boat is on track!\n");
                 break;
             case 1:
-                printf("Unrealistic request. Make sure you privided meaningful values (keep in mind that the playing field is limited to 10x10)\n");
+                printf("Unrealistic request. Make sure you privided meaningful values (keep in mind that the playing field is limited to %dx%d)\n", sizex, sizey);
                 break;
             case 2:
                 printf("Impossible to proceed. There is already a boat on your boat's path.\n");
@@ -399,9 +620,9 @@ void playerPlaceBoats(){
     printf("\n");
     printf("You are about to place an outboard : 🚤 🚤 🚤\n");
     do {
-        printf("Please enter start position x (line) [0-9]: ");
+        printf("Please enter start position x (line) [0-%d]: ", sizex-1);
         scanf("%d.1s", &posx);
-        printf("Please enter start position y (column) [0-9]: ");
+        printf("Please enter start position y (column) [0-%d]: ", sizey-1);
         scanf("%d.1s", &posy);
         printf("Please enter the direction (0 = vertical downwards, 1 = horizontal to the right): ");
         scanf("%d.1s", &dir);
@@ -411,7 +632,7 @@ void playerPlaceBoats(){
                 printf("Your boat is on track!\n");
                 break;
             case 1:
-                printf("Unrealistic request. Make sure you privided meaningful values (keep in mind that the playing field is limited to 10x10)\n");
+                printf("Unrealistic request. Make sure you privided meaningful values (keep in mind that the playing field is limited to %dx%d)\n", sizex, sizey);
                 break;
             case 2:
                 printf("Impossible to proceed. There is already a boat on your boat's path.\n");
@@ -436,9 +657,9 @@ void playerPlaceBoats(){
     printf("\n");
     printf("You are about to place another outboard : 🚤 🚤 🚤\n");
     do {
-        printf("Please enter start position x (line) [0-9]: ");
+        printf("Please enter start position x (line) [0-%d]: ", sizex-1);
         scanf("%d.1s", &posx);
-        printf("Please enter start position y (column) [0-9]: ");
+        printf("Please enter start position y (column) [0-%d]: ", sizey-1);
         scanf("%d.1s", &posy);
         printf("Please enter the direction (0 = vertical downwards, 1 = horizontal to the right): ");
         scanf("%d.1s", &dir);
@@ -448,7 +669,7 @@ void playerPlaceBoats(){
                 printf("Your boat is on track!\n");
                 break;
             case 1:
-                printf("Unrealistic request. Make sure you privided meaningful values (keep in mind that the playing field is limited to 10x10)\n");
+                printf("Unrealistic request. Make sure you privided meaningful values (keep in mind that the playing field is limited to %dx%d)\n", sizex, sizey);
                 break;
             case 2:
                 printf("Impossible to proceed. There is already a boat on your boat's path.\n");
@@ -474,9 +695,9 @@ void playerPlaceBoats(){
     
     printf("You are about to place a sailing ship : ⛵️\n");
     do {
-        printf("Please enter start position x (line) [0-9]: ");
+        printf("Please enter start position x (line) [0-%d]: ", sizex-1);
         scanf("%d.1s", &posx);
-        printf("Please enter start position y (column) [0-9]: ");
+        printf("Please enter start position y (column) [0-%d]: ", sizey-1);
         scanf("%d.1s", &posy);
         printf("Please enter the direction (0 = vertical downwards, 1 = horizontal to the right): ");
         scanf("%d.1s", &dir);
@@ -486,7 +707,7 @@ void playerPlaceBoats(){
                 printf("Your boat is on track!\n");
                 break;
             case 1:
-                printf("Unrealistic request. Make sure you privided meaningful values (keep in mind that the playing field is limited to 10x10)\n");
+                printf("Unrealistic request. Make sure you privided meaningful values (keep in mind that the playing field is limited to %dx%d)\n", sizex, sizey);
                 break;
             case 2:
                 printf("Impossible to proceed. There is already a boat on your boat's path.\n");
@@ -512,9 +733,9 @@ void playerPlaceBoats(){
     
     printf("You are about to place a cargo : 🚢\n");
     do {
-        printf("Please enter start position x (line) [0-9]: ");
+        printf("Please enter start position x (line) [0-%d]: ", sizex-1);
         scanf("%d.1s", &posx);
-        printf("Please enter start position y (column) [0-9]: ");
+        printf("Please enter start position y (column) [0-%d]: ", sizey-1);
         scanf("%d.1s", &posy);
         printf("Please enter the direction (0 = vertical downwards, 1 = horizontal to the right): ");
         scanf("%d.1s", &dir);
@@ -524,7 +745,7 @@ void playerPlaceBoats(){
                 printf("Your boat is on track!\n");
                 break;
             case 1:
-                printf("Unrealistic request. Make sure you privided meaningful values (keep in mind that the playing field is limited to 10x10)\n");
+                printf("Unrealistic request. Make sure you privided meaningful values (keep in mind that the playing field is limited to %dx%d)\n", sizex, sizey);
                 break;
             case 2:
                 printf("Impossible to proceed. There is already a boat on your boat's path.\n");
@@ -549,11 +770,22 @@ void playerPlaceBoats(){
 }
 
 void backup(int whosturn){
+    
+    // We backup everything, with the turn as argument
+    
+    FILE *fieldx = fopen("/Users/plugn/Desktop/Battleship/fieldx.data", "w");
+    fprintf(fieldx, "%d", sizex);
+    fclose(fieldx);
+    
+    FILE *fieldy = fopen("/Users/plugn/Desktop/Battleship/fieldy.data", "w");
+    fprintf(fieldy, "%d", sizey);
+    fclose(fieldy);
+    
     FILE *f = fopen("/Users/plugn/Desktop/Battleship/playfield2.data", "w");
     
     int m,n;
-    for (m = 0; m < 10; m++) {
-        for (n = 0; n < 10; n++) {
+    for (m = 0; m < sizex; m++) {
+        for (n = 0; n < sizey; n++) {
             fprintf(f, "%d\n", playfield2[m][n]);
         }
     }
@@ -561,8 +793,8 @@ void backup(int whosturn){
     
     FILE *g = fopen("/Users/plugn/Desktop/Battleship/playfield.data", "w");
     
-    for (m = 0; m < 10; m++) {
-        for (n = 0; n < 10; n++) {
+    for (m = 0; m < sizex; m++) {
+        for (n = 0; n < sizey; n++) {
             fprintf(g, "%d\n", playfield[m][n]);
         }
     }
@@ -580,7 +812,19 @@ void backup(int whosturn){
     return;
 }
 
+void deleteBackup(){
+    
+    FILE *restore = fopen("/Users/plugn/Desktop/Battleship/restore.data", "w");
+    fprintf(restore, "0");
+    fclose(restore);
+ 
+    return;
+}
+
 int isDead(int pf){
+    
+    // We check if all the boats ID are 9ID, which means all are dead so the game is over
+    
     if (pf == 0){
         int deadBoat1 = 0;
         int deadBoat2 = 0;
@@ -589,8 +833,8 @@ int isDead(int pf){
         int deadBoat5 = 0;
         int i,s;
         
-        for (i = 0; i < 10; i++){
-            for (s = 0; s < 10; s++){
+        for (i = 0; i < sizex; i++){
+            for (s = 0; s < sizey; s++){
                 if(playfield[i][s] == 920){
                     deadBoat1 = 1;
                 }
@@ -609,7 +853,7 @@ int isDead(int pf){
             }
         }
         
-        if (deadBoat1 == deadBoat2 == deadBoat3 == deadBoat4 == deadBoat5 == 1){
+        if (deadBoat1 == 1 && deadBoat2 == 1 && deadBoat3 == 1 && deadBoat4 == 1 && deadBoat5 == 1){
             return 1;
         } else {
             return 0;
@@ -623,8 +867,8 @@ int isDead(int pf){
         int deadBoat5 = 0;
         int i,s;
         
-        for (i = 0; i < 10; i++){
-            for (s = 0; s < 10; s++){
+        for (i = 0; i < sizex; i++){
+            for (s = 0; s < sizey; s++){
                 if(playfield2[i][s] == 920){
                     deadBoat1 = 1;
                 }
@@ -643,7 +887,7 @@ int isDead(int pf){
             }
         }
         
-        if (deadBoat1 == deadBoat2 == deadBoat3 == deadBoat4 == deadBoat5 == 1){
+        if (deadBoat1 == 1 && deadBoat2 == 1 && deadBoat3 == 1 && deadBoat4 == 1 && deadBoat5 == 1){
             return 1;
         } else {
             return 0;
@@ -653,6 +897,9 @@ int isDead(int pf){
 }
 
 void convertToDeath(int pf){
+    
+    // We convert all the 5ID to 9ID when there is no ID left using an ID counter (cf. Boat ID structure)
+    
     if (pf == 0){
         int count1 = 0;
         int count2 = 0;
@@ -661,8 +908,8 @@ void convertToDeath(int pf){
         int count5 = 0;
         
         int i,s;
-        for (i = 0; i < 10; i++){
-            for (s = 0; s < 10; s++){
+        for (i = 0; i < sizex; i++){
+            for (s = 0; s < sizey; s++){
                 if (playfield[i][s] == 520){
                     count1++;
                 }
@@ -682,8 +929,8 @@ void convertToDeath(int pf){
         }
         
         if (count1 == 2){
-            for (i = 0; i < 10; i++){
-                for (s = 0; s < 10; s++){
+            for (i = 0; i < sizex; i++){
+                for (s = 0; s < sizey; s++){
                     if (playfield[i][s] == 520){
                         playfield[i][s] = 920;
                     }
@@ -692,8 +939,8 @@ void convertToDeath(int pf){
         }
         
         if (count2 == 3){
-            for (i = 0; i < 10; i++){
-                for (s = 0; s < 10; s++){
+            for (i = 0; i < sizex; i++){
+                for (s = 0; s < sizey; s++){
                     if (playfield[i][s] == 530){
                         playfield[i][s] = 930;
                     }
@@ -702,8 +949,8 @@ void convertToDeath(int pf){
         }
         
         if (count3 == 3){
-            for (i = 0; i < 10; i++){
-                for (s = 0; s < 10; s++){
+            for (i = 0; i < sizex; i++){
+                for (s = 0; s < sizey; s++){
                     if (playfield[i][s] == 535){
                         playfield[i][s] = 935;
                     }
@@ -712,8 +959,8 @@ void convertToDeath(int pf){
         }
         
         if (count4 == 4){
-            for (i = 0; i < 10; i++){
-                for (s = 0; s < 10; s++){
+            for (i = 0; i < sizex; i++){
+                for (s = 0; s < sizey; s++){
                     if (playfield[i][s] == 540){
                         playfield[i][s] = 940;
                     }
@@ -722,8 +969,8 @@ void convertToDeath(int pf){
         }
         
         if (count5 == 5){
-            for (i = 0; i < 10; i++){
-                for (s = 0; s < 10; s++){
+            for (i = 0; i < sizex; i++){
+                for (s = 0; s < sizey; s++){
                     if (playfield[i][s] == 550){
                         playfield[i][s] = 950;
                     }
@@ -739,8 +986,8 @@ void convertToDeath(int pf){
         int count5 = 0;
         
         int i,s;
-        for (i = 0; i < 10; i++){
-            for (s = 0; s < 10; s++){
+        for (i = 0; i < sizex; i++){
+            for (s = 0; s < sizey; s++){
                 if (playfield2[i][s] == 520){
                     count1++;
                 }
@@ -760,8 +1007,8 @@ void convertToDeath(int pf){
         }
         
         if (count1 == 2){
-            for (i = 0; i < 10; i++){
-                for (s = 0; s < 10; s++){
+            for (i = 0; i < sizex; i++){
+                for (s = 0; s < sizey; s++){
                     if (playfield2[i][s] == 520){
                         playfield2[i][s] = 920;
                     }
@@ -770,8 +1017,8 @@ void convertToDeath(int pf){
         }
         
         if (count2 == 3){
-            for (i = 0; i < 10; i++){
-                for (s = 0; s < 10; s++){
+            for (i = 0; i < sizex; i++){
+                for (s = 0; s < sizey; s++){
                     if (playfield2[i][s] == 530){
                         playfield2[i][s] = 930;
                     }
@@ -780,8 +1027,8 @@ void convertToDeath(int pf){
         }
         
         if (count3 == 3){
-            for (i = 0; i < 10; i++){
-                for (s = 0; s < 10; s++){
+            for (i = 0; i < sizex; i++){
+                for (s = 0; s < sizey; s++){
                     if (playfield2[i][s] == 535){
                         playfield2[i][s] = 935;
                     }
@@ -790,8 +1037,8 @@ void convertToDeath(int pf){
         }
         
         if (count4 == 4){
-            for (i = 0; i < 10; i++){
-                for (s = 0; s < 10; s++){
+            for (i = 0; i < sizex; i++){
+                for (s = 0; s < sizey; s++){
                     if (playfield2[i][s] == 540){
                         playfield2[i][s] = 940;
                     }
@@ -800,8 +1047,8 @@ void convertToDeath(int pf){
         }
         
         if (count5 == 5){
-            for (i = 0; i < 10; i++){
-                for (s = 0; s < 10; s++){
+            for (i = 0; i < sizex; i++){
+                for (s = 0; s < sizey; s++){
                     if (playfield2[i][s] == 550){
                         playfield2[i][s] = 950;
                     }
@@ -814,25 +1061,86 @@ void convertToDeath(int pf){
 
 int shoot(int pf, int posx, int posy){
     
+    // We convert the ID to 5ID to inform it is hit, or to 1 if it is the sea.
     
+    if (pf == 0){
+        if (playfield[posx][posy] == 20) {
+            playfield[posx][posy] = 520;
+            return 1;
+        }
+        else if (playfield[posx][posy] == 30) {
+            playfield[posx][posy] = 530;
+            return 1;
+        }
+        else if (playfield[posx][posy] == 35) {
+            playfield[posx][posy] = 535;
+            return 1;
+        }
+        else if (playfield[posx][posy] == 40) {
+            playfield[posx][posy] = 540;
+            return 1;
+        }
+        else if (playfield[posx][posy] == 50) {
+            playfield[posx][posy] = 550;
+            return 1;
+        } else {
+            playfield[posx][posy] = 1;
+            return 0;
+        }
+    } else {
+        if (playfield2[posx][posy] == 20) {
+            playfield2[posx][posy] = 520;
+            return 1;
+        }
+        else if (playfield2[posx][posy] == 30) {
+            playfield2[posx][posy] = 530;
+            return 1;
+        }
+        else if (playfield2[posx][posy] == 35) {
+            playfield2[posx][posy] = 535;
+            return 1;
+        }
+        else if (playfield2[posx][posy] == 40) {
+            playfield2[posx][posy] = 540;
+            return 1;
+        }
+        else if (playfield2[posx][posy] == 50) {
+            playfield2[posx][posy] = 550;
+            return 1;
+        } else {
+            playfield2[posx][posy] = 1;
+            return 0;
+        }
+    }
     
-    return 1;
+    return 5;
 }
 
 int gameStarted(int turn){
         // This is the core center for the game and it will retrun the winner
+    
     printf("\n");
     playingShowBoards();
     
     int posx, posy;
     
     if (turn == 0){
+        int won;
         printf("It is your turn to fire!\n");
-        printf("Please enter position x (line) [0-9]: ");
+        printf("Please enter position x (line) [0-%d]: ", sizex-1);
         scanf("%d.1s", &posx);
-        printf("Please enter position y (column) [0-9]: ");
+        printf("Please enter position y (column) [0-%d]: ", sizey-1);
         scanf("%d.1s", &posy);
-        if (playfield2[posx][posy] == 1 || playfield2[posx][posy] == 500 / 100 % 100 || playfield2[posx][posy] == 900 / 100 % 100){
+        
+        while (posx < 0 || posx >= sizex || posy < 0 || posy >= sizey) {
+            printf("Please enter reasonable values!\n");
+            printf("Please enter position x (line) [0-%d]: ", sizex-1);
+            scanf("%d.1s", &posx);
+            printf("Please enter position y (column) [0-%d]: ", sizey-1);
+            scanf("%d.1s", &posy);
+        }
+        
+        if (playfield2[posx][posy] == 1 || playfield2[posx][posy] == 520 || playfield2[posx][posy] == 530 || playfield2[posx][posy] == 535 || playfield2[posx][posy] == 540 || playfield2[posx][posy] == 550 || playfield2[posx][posy] == 920 || playfield2[posx][posy] == 930 || playfield2[posx][posy] == 935 || playfield2[posx][posy] == 940 || playfield2[posx][posy] == 950){
             printf("You already shoot there!\n");
             gameStarted(turn);
         }
@@ -840,41 +1148,77 @@ int gameStarted(int turn){
         if (result == 1){
             // Hit
             printf("You hit a boat!\n");
+            
+            // There is a process to convert the shot boats to dead boats (5ID -> 9ID)
+            convertToDeath(1);
+            // We check if all the boats are dead
+            won = isDead(1);
+            if (won == 1){
+                winningEntity = turn;
+                return turn;
+            }
+            
+            // We backup the state of the game and recall the same function with the same turn if a boat is hit
+            backup(turn);
             gameStarted(turn);
         }
         
+        // And we do the same if the boat was not hit, just in case of a malfunction, and we recall the function with the computers turn
         convertToDeath(1);
-        
-        if (isDead(1) == 1){
+        won = isDead(1);
+        if (won == 1){
+            winningEntity = turn;
             return turn;
         }
+        backup(turn);
         gameStarted(1);
         
     } else {
+        printf("\n The computer has played!\n");
+        int won;
         srand((unsigned int)time(NULL));
-        posx = rand() % 10;
-        posy = rand() % 10;
-        if (playfield[posx][posy] == 1 || playfield[posx][posy] == 500 / 100 % 100 || playfield[posx][posy] == 900 / 100 % 100){
+        posx = rand() % sizex;
+        posy = rand() % sizey;
+        if (playfield[posx][posy] == 1 || playfield[posx][posy] == 520 || playfield[posx][posy] == 530 || playfield[posx][posy] == 535 || playfield2[posx][posy] == 540 || playfield2[posx][posy] == 550 || playfield2[posx][posy] == 920 || playfield2[posx][posy] == 930 || playfield[posx][posy] == 935 || playfield[posx][posy] == 940 || playfield[posx][posy] == 950){
             gameStarted(turn);
         }
         int result = shoot(0, posx, posy);
         if (result == 1){
+            convertToDeath(1);
+            won = isDead(1);
+            if (won == 1){
+                return turn;
+            }
+            
+            backup(turn);
             gameStarted(turn);
         }
         
         convertToDeath(0);
-        
-        if (isDead(0) == 1){
+        won = isDead(0);
+        if (won == 1){
             return turn;
         }
+        backup(turn);
         gameStarted(0);
     }
     
-    return 953;
+    // This is the last step of the function. As it is recalled multiple times, we decided to use a global variable that will save the winning entity to safely return the winner
+    return winningEntity;
 }
 
 void winner(int turn){
-    int result = gameStarted(turn);
+    int result;
+    // This is the longest step of the program, the gameStarted function returns the winner.
+    result = gameStarted(turn);
+    
+    // At this point, the game is over, we backup everything and then unsign it
+    backup(result);
+    deleteBackup();
+    printf("\n\n");
+    
+    // Show the final boards and announce the winner:
+    finalShowBoards();
     if (result == 0){
         printf("\n🎉 Congratulations! You won the game!\n");
     } else if (result == 1){
@@ -886,19 +1230,36 @@ void winner(int turn){
 
 void game(){
     
+    // Game configuration process
+    
+    // Set the size first
+    
+    printf("Select the number of lines (x-axis) [LIMITED TO 500]: ");
+    scanf("%d", &sizex);
+    printf("Select the number of columns (y-axis) [LIMITED TO 500]: ");
+    scanf("%d", &sizey);
+    
+    while (sizex > 500 || sizex < 0 || sizey > 500 || sizey < 0) {
+        printf("Please enter reasonable values.\n");
+        printf("Select the number of lines (x-axis) [LIMITED TO 500]: ");
+        scanf("%d", &sizex);
+        printf("Select the number of columns (y-axis) [LIMITED TO 500]: ");
+        scanf("%d", &sizey);
+    }
+    
         // Initiate the playfields
     int i, s;
     
-        // Playfield for the players #PS4
-    for (i = 0; i < 10; i++){
-        for (s = 0; s < 10; s++){
+        // Playfield for the player
+    for (i = 0; i < sizex; i++){
+        for (s = 0; s < sizey; s++){
             playfield[i][s] = 0;
         }
     }
     
         // Playfield for the computer
-    for (i = 0; i < 10; i++){
-        for (s = 0; s < 10; s++){
+    for (i = 0; i < sizex; i++){
+        for (s = 0; s < sizey; s++){
             playfield2[i][s] = 0;
         }
     }
@@ -906,17 +1267,23 @@ void game(){
         // Place the boats
     computerPlaceBoats();
     
-    
+    // DEV MODE -- REMOVE FOR THE PRODUCTION VERSION
     showBoard(1);
+    
     printf("\n\n");
     
     playerPlaceBoats();
     
-    backup(0);
     
+    // Who is going to fire first?
     srand((unsigned int)time(NULL));
     int turn;
     turn = rand() % 2;
+    
+    // Now that the game is set, we backup everything so it can be restored at this point
+    backup(turn);
+    
+    // The game starts
     winner(turn);
     return;
 }
@@ -929,7 +1296,11 @@ void restore(){
     int restore;
     fscanf(r, "%d", &restore);
     
+    // This file is crucial because it tells if the backup is valid
+    
     if (restore == 0){
+        // No valid backup
+        // Run the game configuration process
         game();
         return;
     } else {
@@ -937,15 +1308,28 @@ void restore(){
         int choice;
         scanf("%d", &choice);
         if (choice == 0){
+            // The backup is marked as non-valid, in order to not confuse the user if he restarts the program with the same backup
+            deleteBackup();
             game();
             return;
         }
     }
     
+    // We restore everything back in the variables, starting with the size of the field
+    // We could use a single file for everything, but in order to avoid confusion, we decided to split the files
+    
+    FILE *fieldx = fopen("/Users/plugn/Desktop/Battleship/fieldx.data", "r");
+    fscanf(fieldx, "%d", &sizex);
+    fclose(fieldx);
+    
+    FILE *fieldy = fopen("/Users/plugn/Desktop/Battleship/fieldy.data", "r");
+    fscanf(fieldy, "%d", &sizey);
+    fclose(fieldy);
+    
     FILE *g = fopen("/Users/plugn/Desktop/Battleship/playfield.data", "r");
     int x,y;
-    for (x = 0; x < 10; x++) {
-        for (y = 0; y < 10; y++) {
+    for (x = 0; x < sizex; x++) {
+        for (y = 0; y < sizey; y++) {
             fscanf(g, "%d", &playfield[x][y]);
         }
     }
@@ -953,8 +1337,8 @@ void restore(){
     fclose(g);
     
     FILE *f = fopen("/Users/plugn/Desktop/Battleship/playfield2.data", "r");
-    for (x = 0; x < 10; x++) {
-        for (y = 0; y < 10; y++) {
+    for (x = 0; x < sizex; x++) {
+        for (y = 0; y < sizey; y++) {
             fscanf(f, "%d", &playfield2[x][y]);
         }
     }
@@ -967,6 +1351,7 @@ void restore(){
     
     fclose(h);
     
+    // This function starts officially the game
     winner(turn);
 }
 
@@ -975,6 +1360,7 @@ void mainmenu(){
     
         // Create a main menu
     
+    // The function restore will check if a backup is still valid to be restored
     restore();
     return;
 }
@@ -989,7 +1375,7 @@ void mainmenu(){
 
 int main(int argc, const char * argv[]) {
     
-    
+    // Calling the main menu
     mainmenu();
     
     
