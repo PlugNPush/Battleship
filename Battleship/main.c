@@ -12,7 +12,7 @@
 #include <time.h>
 
 // Our global variables used in the entire code, way easier to manage than a main declaration + pointers
-int playfield[500][500], playfield2[500][500], sizex, sizey, winningEntity;
+int playfield[500][500], playfield2[500][500], sizex, sizey, winningEntity, missionIA, iax, iay, iadir, iaSuccessCount, iaGoOpposite, iatempdir, iafirststart, iafailed;
 
 
 
@@ -809,6 +809,43 @@ void backup(int whosturn){
     fprintf(turn, "%d", whosturn);
     fclose(turn);
     
+    FILE *missionia = fopen("/Users/plugn/Desktop/Battleship/ia_data/missionia.data", "w");
+    fprintf(missionia, "%d", missionIA);
+    fclose(missionia);
+    
+    FILE *iaxf = fopen("/Users/plugn/Desktop/Battleship/ia_data/iax.data", "w");
+    fprintf(iaxf, "%d", iax);
+    fclose(iaxf);
+    
+    FILE *iayf = fopen("/Users/plugn/Desktop/Battleship/ia_data/iay.data", "w");
+    fprintf(iayf, "%d", iay);
+    fclose(iayf);
+    
+    FILE *iadf = fopen("/Users/plugn/Desktop/Battleship/ia_data/iadir.data", "w");
+    fprintf(iadf, "%d", iadir);
+    fclose(iadf);
+    
+    FILE *iaff = fopen("/Users/plugn/Desktop/Battleship/ia_data/iafailed.data", "w");
+    fprintf(iaff, "%d", iafailed);
+    fclose(iaff);
+    
+    FILE *iasf = fopen("/Users/plugn/Desktop/Battleship/ia_data/iafirststart.data", "w");
+    fprintf(iasf, "%d", iafirststart);
+    fclose(iasf);
+    
+    FILE *iacf = fopen("/Users/plugn/Desktop/Battleship/ia_data/iasuccesscount.data", "w");
+    fprintf(iacf, "%d", iaSuccessCount);
+    fclose(iacf);
+    
+    FILE *iatf = fopen("/Users/plugn/Desktop/Battleship/ia_data/iatempdir.data", "w");
+    fprintf(iatf, "%d", iatempdir);
+    fclose(iatf);
+    
+    FILE *iagf = fopen("/Users/plugn/Desktop/Battleship/ia_data/iagoopposite.data", "w");
+    fprintf(iagf, "%d", iaGoOpposite);
+    fclose(iagf);
+    
+    
     return;
 }
 
@@ -817,6 +854,10 @@ void deleteBackup(){
     FILE *restore = fopen("/Users/plugn/Desktop/Battleship/restore.data", "w");
     fprintf(restore, "0");
     fclose(restore);
+    
+    FILE *ia = fopen("/Users/plugn/Desktop/Battleship/missionia.data", "w");
+    fprintf(ia, "0");
+    fclose(ia);
  
     return;
 }
@@ -1170,21 +1211,75 @@ int gameStarted(int turn){
             winningEntity = turn;
             return turn;
         }
-        backup(turn);
+        backup(1);
         gameStarted(1);
         
     } else {
         printf("\n The computer has played!\n");
         int won;
-        srand((unsigned int)time(NULL));
-        posx = rand() % sizex;
-        posy = rand() % sizey;
+        
+        if (missionIA == 1){
+            if (iadir == 0){
+                posx = iax + iaSuccessCount;
+                posy = iay;
+            } else if (iadir == 1){
+                posx = iax;
+                posy = iay + iaSuccessCount;
+            } else {
+                if (iafirststart == 1){
+                    srand((unsigned int)time(NULL));
+                    iatempdir = rand() % 2;
+                    iafirststart = 0;
+                }
+                if (iatempdir == 0){
+                    posx = iax + iaSuccessCount;
+                    posy = iay;
+                } else {
+                    posx = iax;
+                    posy = iay + iaSuccessCount;
+                }
+            }
+            
+        } else{
+            srand((unsigned int)time(NULL));
+            posx = rand() % sizex;
+            posy = rand() % sizey;
+        }
+        
+        
         if (playfield[posx][posy] == 1 || playfield[posx][posy] == 520 || playfield[posx][posy] == 530 || playfield[posx][posy] == 535 || playfield2[posx][posy] == 540 || playfield2[posx][posy] == 550 || playfield2[posx][posy] == 920 || playfield2[posx][posy] == 930 || playfield[posx][posy] == 935 || playfield[posx][posy] == 940 || playfield[posx][posy] == 950){
             gameStarted(turn);
         }
         int result = shoot(0, posx, posy);
         if (result == 1){
+            if (missionIA == 1){
+                if (iaGoOpposite == 1){
+                    iaSuccessCount--;
+                } else {
+                    iaSuccessCount++;
+                }
+                if (iadir != 0 && iadir != 1){
+                    iadir = iatempdir;
+                }
+            } else {
+                missionIA = 1;
+                iax = posx;
+                iay = posy;
+                iafirststart = 1;
+                iaGoOpposite = 0;
+                iafailed = 0;
+                iaSuccessCount = 1;
+                iadir = 5;
+            }
+            
             convertToDeath(1);
+            
+            if (missionIA == 1){
+                if (playfield[iax][iay] == 920 || playfield[iax][iay] == 930 || playfield[iax][iay] == 935 || playfield[iax][iay] == 940 || playfield[iax][iay] == 950){
+                    missionIA = 0;
+                }
+            }
+            
             won = isDead(1);
             if (won == 1){
                 return turn;
@@ -1194,12 +1289,43 @@ int gameStarted(int turn){
             gameStarted(turn);
         }
         
+        if (missionIA == 1){
+            iafailed++;
+            
+            if (iafailed > 1){
+                if (iatempdir == 0){
+                    iadir = 1;
+                } else {
+                    iadir = 0;
+                }
+                
+                if (iafailed > 2){
+                    iaGoOpposite = 1;
+                    iaSuccessCount = -1;
+                }
+                
+                if (iafailed > 3){
+                    iadir = iatempdir;
+                    iaGoOpposite = 1;
+                    iaSuccessCount = -1;
+                }
+                
+            } else {
+                    iaGoOpposite = 1;
+                    iaSuccessCount = -1;
+                }
+            
+            }
+            
+        
+        
         convertToDeath(0);
+        
         won = isDead(0);
         if (won == 1){
             return turn;
         }
-        backup(turn);
+        backup(0);
         gameStarted(0);
     }
     
@@ -1350,6 +1476,43 @@ void restore(){
     fscanf(h, "%d", &turn);
     
     fclose(h);
+    
+    
+    FILE *missionia = fopen("/Users/plugn/Desktop/Battleship/ia_data/missionia.data", "w");
+    fscanf(missionia, "%d", &missionIA);
+    fclose(missionia);
+    
+    FILE *iaxf = fopen("/Users/plugn/Desktop/Battleship/ia_data/iax.data", "w");
+    fscanf(iaxf, "%d", &iax);
+    fclose(iaxf);
+    
+    FILE *iayf = fopen("/Users/plugn/Desktop/Battleship/ia_data/iay.data", "w");
+    fscanf(iayf, "%d", &iay);
+    fclose(iayf);
+    
+    FILE *iadf = fopen("/Users/plugn/Desktop/Battleship/ia_data/iadir.data", "w");
+    fscanf(iadf, "%d", &iadir);
+    fclose(iadf);
+    
+    FILE *iaff = fopen("/Users/plugn/Desktop/Battleship/ia_data/iafailed.data", "w");
+    fscanf(iaff, "%d", &iafailed);
+    fclose(iaff);
+    
+    FILE *iasf = fopen("/Users/plugn/Desktop/Battleship/ia_data/iafirststart.data", "w");
+    fscanf(iasf, "%d", &iafirststart);
+    fclose(iasf);
+    
+    FILE *iacf = fopen("/Users/plugn/Desktop/Battleship/ia_data/iasuccesscount.data", "w");
+    fscanf(iacf, "%d", &iaSuccessCount);
+    fclose(iacf);
+    
+    FILE *iatf = fopen("/Users/plugn/Desktop/Battleship/ia_data/iatempdir.data", "w");
+    fscanf(iatf, "%d", &iatempdir);
+    fclose(iatf);
+    
+    FILE *iagf = fopen("/Users/plugn/Desktop/Battleship/ia_data/iagoopposite.data", "w");
+    fscanf(iagf, "%d", &iaGoOpposite);
+    fclose(iagf);
     
     // This function starts officially the game
     winner(turn);
