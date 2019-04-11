@@ -532,7 +532,7 @@ void computerPlaceBoats(){
     
     // The computer places each boats randomly
     
-    srand((unsigned int)time(NULL));
+    //srand((unsigned int)time(NULL));
     int posx;
     int posy;
     int dir;
@@ -1160,12 +1160,14 @@ int shoot(int pf, int posx, int posy){
 int gameStarted(int turn){
         // This is the core center for the game and it will retrun the winner
     
-    printf("\n");
-    playingShowBoards();
+    
     
     int posx, posy;
     
     if (turn == 0){
+        printf("\n");
+        playingShowBoards();
+        
         int won;
         printf("It is your turn to fire!\n");
         printf("Please enter position x (line) [0-%d]: ", sizex-1);
@@ -1215,7 +1217,7 @@ int gameStarted(int turn){
         gameStarted(1);
         
     } else {
-        printf("\n The computer has played!\n");
+        
         int won;
         
         if (missionIA == 1){
@@ -1227,7 +1229,7 @@ int gameStarted(int turn){
                 posy = iay + iaSuccessCount;
             } else {
                 if (iafirststart == 1){
-                    srand((unsigned int)time(NULL));
+                    
                     iatempdir = rand() % 2;
                     iafirststart = 0;
                 }
@@ -1241,15 +1243,54 @@ int gameStarted(int turn){
             }
             
         } else{
-            srand((unsigned int)time(NULL));
+            //srand((unsigned int)time(NULL));
             posx = rand() % sizex;
             posy = rand() % sizey;
         }
         
         
-        if (playfield[posx][posy] == 1 || playfield[posx][posy] == 520 || playfield[posx][posy] == 530 || playfield[posx][posy] == 535 || playfield2[posx][posy] == 540 || playfield2[posx][posy] == 550 || playfield2[posx][posy] == 920 || playfield2[posx][posy] == 930 || playfield[posx][posy] == 935 || playfield[posx][posy] == 940 || playfield[posx][posy] == 950){
-            gameStarted(turn);
+        while (playfield[posx][posy] == 1 || playfield[posx][posy] == 520 || playfield[posx][posy] == 530 || playfield[posx][posy] == 535 || playfield2[posx][posy] == 540 || playfield2[posx][posy] == 550 || playfield2[posx][posy] == 920 || playfield2[posx][posy] == 930 || playfield[posx][posy] == 935 || playfield[posx][posy] == 940 || playfield[posx][posy] == 950 || posx < 0 || posx >= sizex || posy < 0 || posy >= sizey) {
+            if (missionIA == 1){
+                iafirststart = 0;
+                iafailed++;
+                
+                if (iafailed > 1){
+                    if (iatempdir == 0){
+                        iadir = 1;
+                    } else {
+                        iadir = 0;
+                    }
+                    
+                    if (iafailed > 2){
+                        iaGoOpposite = 1;
+                        iaSuccessCount = -1;
+                    }
+                    
+                    if (iafailed > 3){
+                        iadir = iatempdir;
+                        iaGoOpposite = 1;
+                        iaSuccessCount = -1;
+                    }
+                    
+                } else {
+                    iaGoOpposite = 1;
+                    iaSuccessCount = -1;
+                }
+                
+                if (iadir == 0){
+                    posx = iax + iaSuccessCount;
+                    posy = iay;
+                } else if (iadir == 1){
+                    posx = iax;
+                    posy = iay + iaSuccessCount;
+                }
+                
+            } else {
+                posx = rand() % sizex;
+                posy = rand() % sizey;
+            }
         }
+        
         int result = shoot(0, posx, posy);
         if (result == 1){
             if (missionIA == 1){
@@ -1279,7 +1320,7 @@ int gameStarted(int turn){
                     missionIA = 0;
                 }
             }
-            
+            printf("\n The computer has played!\n");
             won = isDead(1);
             if (won == 1){
                 return turn;
@@ -1320,7 +1361,7 @@ int gameStarted(int turn){
         
         
         convertToDeath(0);
-        
+        printf("\n The computer has played!\n");
         won = isDead(0);
         if (won == 1){
             return turn;
@@ -1402,7 +1443,7 @@ void game(){
     
     
     // Who is going to fire first?
-    srand((unsigned int)time(NULL));
+    //srand((unsigned int)time(NULL));
     int turn;
     turn = rand() % 2;
     
@@ -1537,7 +1578,7 @@ void mainmenu(){
 
 
 int main(int argc, const char * argv[]) {
-    
+    srand((unsigned int)time(NULL));
     // Calling the main menu
     mainmenu();
     
